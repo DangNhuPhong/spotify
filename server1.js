@@ -279,7 +279,43 @@ app.get("/api/spotify-token", async (req, res) => {
     res.status(500).json({ error: "Lỗi Server Backend" });
   }
 });
+// ==========================================
+// API 7: LẤY DANH SÁCH BÀI HÁT (TRACKS)
+// ==========================================
+app.get("/api/tracks", async (req, res) => {
+  try {
+    // Lấy toàn bộ dữ liệu trong collection Tracks
+    const tracks = await Track.find({});
 
+    res.status(200).json({
+      message: "Lấy danh sách bài hát thành công!",
+      total_tracks: tracks.length,
+      data: tracks,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Lỗi Server khi truy xuất danh sách Track" });
+  }
+});
+
+// ==========================================
+// API 8: LẤY DANH SÁCH NGƯỜI DÙNG (USERS)
+// ==========================================
+app.get("/api/users", async (req, res) => {
+  try {
+    // Lấy toàn bộ dữ liệu User nhưng BỎ QUA trường password (.select("-password"))
+    const users = await User.find({}).select("-password");
+
+    res.status(200).json({
+      message: "Lấy danh sách người dùng thành công!",
+      total_users: users.length,
+      data: users,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Lỗi Server khi truy xuất danh sách User" });
+  }
+});
 // ==========================================
 // KHỞI ĐỘNG SERVER (LUÔN NẰM Ở DƯỚI CÙNG)
 // ==========================================
