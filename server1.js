@@ -158,7 +158,30 @@ app.post("/api/ui-settings", async (req, res) => {
     res.status(500).json({ error: "Lỗi lưu cài đặt UI" });
   }
 });
+app.get("/api/ui-settings/:user_id", async (req, res) => {
+  try {
+    const { user_id } = req.params; // Lấy từ URL path
 
+    const user = await User.findOne({ user_id: user_id });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: "User not found! / Không tìm thấy người dùng!" });
+    }
+
+    // Trả về dữ liệu ui_settings đã lưu
+    res.status(200).json({
+      theme_color: user.ui_settings?.theme_color,
+      sticker_coordinates: user.ui_settings?.sticker_coordinates
+        ? JSON.parse(user.ui_settings.sticker_coordinates) // Parse ngược lại nếu cần
+        : [],
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 // ==========================================
 // API 4: ĐĂNG KÝ TÀI KHOẢN (SIGN UP)
 // ==========================================
